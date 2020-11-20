@@ -1,0 +1,117 @@
+<!-- Upadting css variable with Js -->
+
+<!-- while compiling the css variable cannot get updated but using JS we can do that -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <style>
+            /* to get the root of the document  */
+            :root {
+                /* css variable declaraion */
+                --spacing: 20px;
+                --blur: 10px;
+                --base: #CCCC00;
+            }
+
+            img {
+                /* each element is storing the variable */
+                padding: var(--spacing);
+                filter: blur(var(--blur));
+                background: var(--base);
+            }
+
+            .hl {
+                color: var(--base);
+            }
+
+            body {
+                background: #193549;
+                color: white;
+                font-family: 'helvetica neue', sans-serif;
+                font-weight: 100;
+                font-size: 50px;
+                text-align: center;
+            }
+
+            .controls {
+                margin-bottom: 50px;
+            }
+
+            input {
+                width:100px;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+        <!-- hl -> highlighter -->
+        <h2>Update CSS Variables with <span class='hl'>JS</span></h2> 
+
+        <div class="controls">
+
+            <label for="spacing">Spacing:</label>
+            <!-- value sets to the value of the spacing range initially when the page is loaded and not the spacing if the image-->
+            <input id="spacing" type="range" name="spacing" min="0" max="200" value="10" data-sizing="px">
+
+            <label for="blur">Blur:</label>
+            <!-- value sets to the value of the blur range initially when the page is loaded and not the spacing if the image-->
+            <input id="blur" type="range" name="blur" min="0" max="30" value="20" data-sizing="px">
+
+            <label for="base">Base Color:</label>
+            <!-- value should be in hexa color code and this sets to the color of the bar and not the base color if the image & hl -->
+            <input id="base" type="color" name="base" value="#666600">  
+            <!-- here, it is the colour picker of our system -->
+
+        </div>
+
+        <!-- shoud not be included under the controls -->
+
+        <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
+
+        <script>
+
+            /*
+            1. Get the inputs (NodeList of inputs (in its prototype we use the forEach))
+            2. Iterate through the each input and 
+                 2.2 if any input's range is changed, get the value
+            3. Get the suffix which is px for spacing & blur and "" for undefined
+            4. Update the css variable using 2.2 & 3
+
+            //*Like that white hat junior thing
+            */
+
+            //1.
+            var inputs = document.querySelectorAll('.controls input');  //calling input from controls
+            //console.log(inputs);
+
+            //2.2
+            function handleUpdate() {
+                //console.log(this.value);  //value of the range that is changed
+                //console.log(this.dataset);  //it gives the value "data-..."->"..." of the element in object format(in this case it is the sizing)
+
+                //this.dataset - it gives the value "data-..."->"..." of the element in object format(in this case it is the sizing)
+                //3
+                const suffix = this.dataset.sizing || '';  //this.dataset.sizing for spacing & blur -> px
+                                                            //" " for base color (or else it will give undefined)
+                //console.log(suffix);      //displays (numbers)px or (" ")px
+                //console.log(this.name);     //displays if (spacing, blur or base) numbers
+
+                //4
+                document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);  //this.name -> spacing, blur, base
+                                                                                                    //this.value -> value of the range that is changed
+            }
+
+            //2
+            inputs.forEach(input => input.addEventListener('change', handleUpdate));    //change -> range is changed
+            inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));     //mousemove -> mouse is simply moved over the range bar
+
+        </script>
+
+    </body>
+
+</html>
